@@ -1,0 +1,217 @@
+@import "../minigame-shell.scss";
+
+
+
+.keypad__card .mg__header {
+  gap: calc(0.8vh / var(--ui-scale, 1));
+  padding: calc(1.1vh / var(--ui-scale, 1)) calc(1.2vh / var(--ui-scale, 1)) calc(0.9vh / var(--ui-scale, 1));
+}
+
+.keypad__card .mg__body {
+  padding: calc(1.1vh / var(--ui-scale, 1)) calc(1.2vh / var(--ui-scale, 1)) calc(1.2vh / var(--ui-scale, 1));
+  align-items: stretch;
+}
+
+.keypad__card .mg__footer {
+  padding: calc(0.7vh / var(--ui-scale, 1)) calc(1.2vh / var(--ui-scale, 1));
+}
+
+.keypad__card .mg__title {
+  font-size: calc(1.45vh / var(--ui-scale, 1));
+}
+
+.keypad__card .mg__subtitle {
+  font-size: calc(1.1vh / var(--ui-scale, 1));
+}
+
+.keypad__layout {
+  --slot: calc(3.8vh / var(--ui-scale, 1));
+  --gap: calc(0.4vh / var(--ui-scale, 1));
+  --entry-w: calc(var(--slot) * 4 + var(--gap) * 3);
+  /* History ~1.5× entry column width */
+  --history-w: calc(var(--entry-w) * 1.5);
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: calc(1vh / var(--ui-scale, 1));
+  box-sizing: border-box;
+}
+
+.keypad__divider {
+  width: 1px;
+  flex-shrink: 0;
+  background: var(--border);
+  align-self: stretch;
+}
+
+.keypad__col {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.75vh / var(--ui-scale, 1));
+  min-width: 0;
+}
+
+.keypad__card .keypad__col--history {
+  width: var(--history-w);
+  min-width: var(--history-w);
+  flex: 0 0 var(--history-w);
+}
+
+.keypad__label {
+  color: var(--muted);
+  font-size: calc(1.05vh / var(--ui-scale, 1));
+  letter-spacing: calc(0.1vh / var(--ui-scale, 1));
+  text-transform: uppercase;
+}
+
+/* Entry + pad share the same total width (4 entry slots) */
+.keypad__controls {
+  width: var(--entry-w);
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.7vh / var(--ui-scale, 1));
+}
+
+.keypad__slots {
+  display: grid;
+  grid-template-columns: repeat(4, var(--slot));
+  gap: var(--gap);
+}
+
+.keypad__slot {
+  width: var(--slot);
+  height: var(--slot);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-field);
+  display: grid;
+  place-items: center;
+  color: var(--white);
+  font-size: calc(1.55vh / var(--ui-scale, 1));
+  font-weight: 700;
+}
+
+.keypad__slot-dot {
+  width: calc(0.45vh / var(--ui-scale, 1));
+  height: calc(0.45vh / var(--ui-scale, 1));
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.keypad__pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  width: 100%;
+}
+
+.keypad__btn {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-field);
+  color: var(--text);
+  font-size: calc(1.35vh / var(--ui-scale, 1));
+  font-weight: 600;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.keypad__btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+  color: var(--white);
+}
+
+.keypad__btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.keypad__btn--action {
+  color: var(--muted);
+}
+
+.keypad__history {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.5vh / var(--ui-scale, 1));
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  overflow: auto;
+}
+
+.keypad__row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+  gap: calc(0.45vh / var(--ui-scale, 1));
+  width: 100%;
+  box-sizing: border-box;
+  padding: calc(0.5vh / var(--ui-scale, 1)) calc(0.55vh / var(--ui-scale, 1));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+
+.keypad__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(0.35vh / var(--ui-scale, 1));
+}
+
+.keypad__guess-digit {
+  color: var(--white);
+  font-size: calc(1.2vh / var(--ui-scale, 1));
+  font-weight: 600;
+  line-height: 1;
+}
+
+.keypad__pip {
+  width: calc(0.95vh / var(--ui-scale, 1));
+  height: calc(0.95vh / var(--ui-scale, 1));
+  border-radius: 50%;
+  border: 1.5px solid var(--text);
+  box-sizing: border-box;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.keypad__pip--spot {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.keypad__pip--digit {
+  background: transparent;
+  border-color: var(--text);
+}
+
+.keypad__pip--digit::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 50%;
+  height: 1.5px;
+  background: var(--text);
+  transform: translateY(-50%);
+}
+
+.keypad__pip--miss {
+  background: transparent;
+  border-color: var(--border-strong);
+}
+
+.keypad__empty {
+  color: var(--dim);
+  font-size: calc(1.15vh / var(--ui-scale, 1));
+  padding: calc(1vh / var(--ui-scale, 1)) calc(0.2vh / var(--ui-scale, 1));
+}
+

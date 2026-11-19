@@ -1,0 +1,91 @@
+@import "../minigame-shell.scss";
+
+.stacker__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--vp) * 10);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.stacker__board {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--mg-board-bg);
+  overflow: hidden;
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 120ms ease;
+}
+
+.stacker__board:disabled {
+  cursor: default;
+}
+
+.stacker__board--ok {
+  border-color: var(--green);
+}
+
+.stacker__board--bad {
+  border-color: var(--red);
+  animation: stacker-shake 180ms ease;
+}
+
+.stacker__goal {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px dashed var(--muted);
+  pointer-events: none;
+}
+
+.stacker__block {
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: calc(var(--vp) * 2);
+  border: 1px solid var(--line-blue);
+  background: var(--tint-blue);
+}
+
+.stacker__block--base {
+  border-color: var(--border-hover);
+  background: var(--bg-field);
+}
+
+.stacker__block--moving {
+  border-color: var(--blue);
+  background: var(--tint-blue-hover);
+}
+
+.stacker__block--chip {
+  border-color: var(--line-red);
+  background: var(--tint-red);
+  animation: stacker-chip 260ms ease forwards;
+}
+
+@keyframes stacker-chip {
+  to {
+    opacity: 0;
+    transform: translateY(calc(var(--vp) * 18));
+  }
+}
+
+@keyframes stacker-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(calc(var(--vp) * -4));
+  }
+  75% {
+    transform: translateX(calc(var(--vp) * 4));
+  }
+}

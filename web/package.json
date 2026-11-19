@@ -1,0 +1,25 @@
+{
+  "name": "at-lib-ui",
+  "private": true,
+  "type": "module",
+  "version": "0.2.0",
+  "scripts": {
+    "start": "vite --port 3001",
+    "start:game": "vite build --watch",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@lucide/svelte": "^0.544.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.0",
+    "sass": "^1.104.0",
+    "svelte": "^5.39.6",
+    "typescript": "^5.8.2",
+    "vite": "^7.1.7"
+  },
+  "trustedDependencies": [
+    "@parcel/watcher"
+  ]
+}

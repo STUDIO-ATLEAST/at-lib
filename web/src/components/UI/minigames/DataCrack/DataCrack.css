@@ -1,0 +1,97 @@
+@import "../minigame-shell.scss";
+
+.datacrack__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--vp) * 10);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.datacrack__board {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--mg-board-bg);
+  overflow: hidden;
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 120ms ease;
+}
+
+.datacrack__board:disabled {
+  cursor: default;
+}
+
+.datacrack__board--ok {
+  border-color: var(--green);
+}
+
+.datacrack__board--bad {
+  border-color: var(--red);
+  animation: datacrack-shake 180ms ease;
+}
+
+.datacrack__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: var(--bg-field);
+  border-top: 1px dashed var(--line-blue);
+  border-bottom: 1px dashed var(--line-blue);
+}
+
+.datacrack__columns {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  gap: calc(var(--vp) * 10);
+  padding: 0 calc(var(--vp) * 12);
+}
+
+.datacrack__col {
+  position: relative;
+  height: 100%;
+}
+
+.datacrack__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: calc(var(--vp) * 3);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-field);
+  box-sizing: border-box;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.datacrack__col--active .datacrack__bar {
+  border-color: var(--blue);
+  background: var(--tint-blue-hover);
+}
+
+.datacrack__col--locked .datacrack__bar {
+  border-color: var(--line-green);
+  background: var(--tint-green);
+}
+
+@keyframes datacrack-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(calc(var(--vp) * -4));
+  }
+  75% {
+    transform: translateX(calc(var(--vp) * 4));
+  }
+}

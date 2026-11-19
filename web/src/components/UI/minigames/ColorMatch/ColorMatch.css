@@ -1,0 +1,181 @@
+@import "../minigame-shell.scss";
+
+
+
+.colormatch__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.4vh / var(--ui-scale, 1));
+  width: 100%;
+}
+
+.colormatch__swatches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(1.2vh / var(--ui-scale, 1));
+}
+
+.colormatch__swatch-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.55vh / var(--ui-scale, 1));
+  min-width: 0;
+}
+
+.colormatch__label {
+  color: var(--muted);
+  font-size: calc(1.15vh / var(--ui-scale, 1));
+  font-weight: 700;
+  letter-spacing: calc(0.03vh / var(--ui-scale, 1));
+  text-transform: uppercase;
+}
+
+.colormatch__swatch {
+  height: calc(11vh / var(--ui-scale, 1));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-panel);
+  transition: background 80ms linear, border-color 140ms ease;
+}
+
+.colormatch__swatch--target {
+  border-color: var(--border-hover);
+}
+
+.colormatch__swatch--hidden {
+  display: grid;
+  place-items: center;
+  background: var(--bg-sidebar) !important;
+  color: var(--muted);
+  font-size: calc(2.4vh / var(--ui-scale, 1));
+  font-weight: 700;
+  letter-spacing: calc(0.2vh / var(--ui-scale, 1));
+}
+
+.colormatch__swatch--close {
+  border-color: var(--green);
+}
+
+.colormatch__swatch--reveal {
+  border-color: var(--red);
+}
+
+.colormatch__sliders {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1vh / var(--ui-scale, 1));
+}
+
+.colormatch__row {
+  display: grid;
+  grid-template-columns: calc(2.2vh / var(--ui-scale, 1)) 1fr calc(3.4vh / var(--ui-scale, 1));
+  align-items: center;
+  gap: calc(0.8vh / var(--ui-scale, 1));
+}
+
+.colormatch__channel {
+  font-size: calc(1.25vh / var(--ui-scale, 1));
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.colormatch__channel--r {
+  color: var(--red);
+}
+
+.colormatch__channel--g {
+  color: var(--green);
+}
+
+.colormatch__channel--b {
+  color: var(--blue);
+}
+
+.colormatch__value {
+  text-align: right;
+  font-size: calc(1.2vh / var(--ui-scale, 1));
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.colormatch__slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: calc(0.55vh / var(--ui-scale, 1));
+  border-radius: 2px;
+  background: var(--bg-field);
+  outline: none;
+  cursor: pointer;
+}
+
+.colormatch__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: calc(1.35vh / var(--ui-scale, 1));
+  height: calc(1.35vh / var(--ui-scale, 1));
+  border-radius: 3px;
+  background: var(--white);
+  border: 1px solid var(--border-hover);
+  cursor: grab;
+}
+
+.colormatch__slider--r {
+  background: linear-gradient(90deg, var(--bg-field), var(--red));
+}
+
+.colormatch__slider--g {
+  background: linear-gradient(90deg, var(--bg-field), var(--green));
+}
+
+.colormatch__slider--b {
+  background: linear-gradient(90deg, var(--bg-field), var(--blue));
+}
+
+.colormatch__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(1vh / var(--ui-scale, 1));
+  color: var(--muted);
+  font-size: calc(1.2vh / var(--ui-scale, 1));
+}
+
+.colormatch__meta strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.colormatch__submit {
+  margin-top: calc(0.2vh / var(--ui-scale, 1));
+  width: 100%;
+  border: 1px solid var(--line-blue);
+  background: var(--tint-blue);
+  color: var(--blue);
+  border-radius: var(--radius-sm);
+  padding: calc(0.9vh / var(--ui-scale, 1)) calc(1.2vh / var(--ui-scale, 1));
+  font-size: calc(1.35vh / var(--ui-scale, 1));
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.colormatch__submit:hover:not(:disabled) {
+  background: var(--tint-blue-hover);
+  border-color: var(--blue);
+}
+
+.colormatch__submit:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.colormatch__submit--ready {
+  border-color: var(--line-green);
+  background: var(--tint-green);
+  color: var(--green);
+}

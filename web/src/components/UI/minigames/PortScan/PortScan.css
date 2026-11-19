@@ -1,0 +1,148 @@
+@import "../minigame-shell.scss";
+
+
+
+.portscan__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.2vh / var(--ui-scale, 1));
+  width: 100%;
+}
+
+.portscan__grid {
+  display: grid;
+  gap: calc(0.55vh / var(--ui-scale, 1));
+  padding: calc(0.7vh / var(--ui-scale, 1));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--mg-board-bg);
+}
+
+.portscan__port {
+  min-height: calc(5.4vh / var(--ui-scale, 1));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-field);
+  color: var(--text);
+  padding: calc(0.55vh / var(--ui-scale, 1)) calc(0.45vh / var(--ui-scale, 1));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(0.25vh / var(--ui-scale, 1));
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    border-color 100ms ease,
+    background 100ms ease,
+    transform 80ms ease;
+}
+
+.portscan__port:hover:not(:disabled) {
+  transform: translateY(calc(-0.1vh / var(--ui-scale, 1)));
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+}
+
+.portscan__port:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.portscan__port--scanned {
+  border-color: var(--line-green);
+  background: var(--tint-green);
+}
+
+.portscan__port--flash-bad {
+  animation: portscan-bad 220ms ease;
+}
+
+.portscan__port--flash-good {
+  animation: portscan-good 220ms ease;
+}
+
+.portscan__id {
+  font-size: calc(1.15vh / var(--ui-scale, 1));
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: calc(0.03vh / var(--ui-scale, 1));
+  font-variant-numeric: tabular-nums;
+}
+
+.portscan__status {
+  font-size: calc(1.35vh / var(--ui-scale, 1));
+  font-weight: 700;
+  letter-spacing: calc(0.02vh / var(--ui-scale, 1));
+  text-transform: uppercase;
+}
+
+.portscan__port--open .portscan__status {
+  color: var(--green);
+}
+
+.portscan__port--closed .portscan__status {
+  color: var(--muted);
+}
+
+.portscan__port--secured .portscan__status {
+  color: var(--blue);
+}
+
+.portscan__port--trapped .portscan__status {
+  color: var(--red);
+}
+
+.portscan__port--fake .portscan__status {
+  color: var(--green);
+}
+
+.portscan__port--open {
+  border-color: var(--line-green);
+}
+
+.portscan__port--trapped {
+  border-color: var(--line-red);
+}
+
+.portscan__port--secured {
+  border-color: var(--line-blue);
+}
+
+.portscan__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: calc(1vh / var(--ui-scale, 1));
+  color: var(--muted);
+  font-size: calc(1.15vh / var(--ui-scale, 1));
+}
+
+.portscan__meta strong {
+  color: var(--text);
+}
+
+@keyframes portscan-bad {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(calc(-0.35vh / var(--ui-scale, 1)));
+    border-color: var(--red);
+  }
+  75% {
+    transform: translateX(calc(0.35vh / var(--ui-scale, 1)));
+    border-color: var(--red);
+  }
+}
+
+@keyframes portscan-good {
+  0%,
+  100% {
+    background: var(--tint-green);
+  }
+  50% {
+    background: var(--tint-green-hover);
+    border-color: var(--green);
+  }
+}

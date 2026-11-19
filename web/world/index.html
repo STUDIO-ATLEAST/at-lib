@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+/* Rendered off-screen (DUI) at 2x, then drawn in the world by the game with DrawSprite.
+   Element theme: solid #1a1b1e panels, Tussilago, .4 accents on solid tints. */
+@font-face { font-family: 'Tussilago'; src: url('Tussilago.otf') format('opentype'); }
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+body { display: flex; align-items: center; justify-content: center;
+  font-family: 'Tussilago', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+
+.row { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.box { box-sizing: border-box; display: inline-flex; align-items: center; height: 48px; border-radius: 6px;
+  background: #1a1b1e; border: 2px solid #303136; }
+.key { width: 48px; justify-content: center; background: #1c2b38; border-color: #2a4d6b; color: #4dabf7; font-size: 24px; font-weight: 700; }
+.label { padding: 0 18px; color: #f1f3f5; font-size: 22px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.card { gap: 12px; padding: 0 20px 0 6px; }
+.card.bare { padding: 0 20px; }
+.card .icon { width: 34px; height: 34px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; }
+.card .text { font-size: 22px; font-weight: 700; letter-spacing: 0.04em; margin-right: -0.04em; text-transform: uppercase; }
+
+.ring { box-sizing: border-box; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  background: #1c2b38; border: 2px solid #2a4d6b; }
+.ring span { width: 12px; height: 12px; border-radius: 3px; background: #4dabf7; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// [accent, solid tint behind the icon]
+const COLORS = {
+  green: ['#69db7c', '#1f3125'], red: ['#ff8787', '#362527'], blue: ['#4dabf7', '#1c2b38'],
+  orange: ['#ffa94d', '#372b1f'], grey: ['#909296', '#26282c'],
+};
+const ICONS = {
+  lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  'lock-open': '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+  'trash-2': '<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
+  truck: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  banknote: '<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+  'car-front': '<path d="m21 8-2 2-1.5-3.7A2 2 0 0 0 15.646 5H8.4a2 2 0 0 0-1.903 1.257L5 10 3 8"/><path d="M7 14h.01"/><path d="M17 14h.01"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/>',
+  trees: '<path d="m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17Z"/><path d="M12 22v-3"/>',
+  'hard-hat': '<path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5"/><path d="M14 6a6 6 0 0 1 6 6v3"/><path d="M4 15v-3a6 6 0 0 1 6-6"/><rect x="2" y="15" width="20" height="4" rx="1"/>',
+  package: '<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  'chevrons-down': '<path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/>',
+};
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function render(d) {
+  const root = document.getElementById('root');
+  if (d.kind === 'ring') {
+    root.innerHTML = '<div class="ring"><span></span></div>';
+  } else if (d.kind === 'prompt') {
+    root.innerHTML = `<div class="row"><span class="box key">${esc(d.key || 'E')}</span><span class="box label">${esc(d.label)}</span></div>`;
+  } else if (d.kind === 'card') {
+    const c = COLORS[d.color] || COLORS.blue;
+    const icon = ICONS[d.icon]
+      ? `<span class="icon" style="background: ${c[1]}; color: ${c[0]}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS[d.icon]}</svg></span>`
+      : '';
+    root.innerHTML = `<div class="box card row${icon ? '' : ' bare'}">${icon}<span class="text" style="color: ${c[0]}">${esc(d.label)}</span></div>`;
+  }
+}
+
+window.addEventListener('message', (e) => { if (e.data && e.data.kind) render(e.data); });
+</script>
+</body>
+</html>

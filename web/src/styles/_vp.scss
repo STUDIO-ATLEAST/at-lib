@@ -1,0 +1,7 @@
+@use "sass:math";
+
+@function vp($px) {
+  $vw-component: calc(#{math.div($px, 1920) * 100}vw);
+  $vh-component: calc(#{math.div($px, 1080) * 100}vh);
+  @return calc((#{$vw-component} + #{$vh-component}) / 2 / var(--ui-scale, 1));
+}

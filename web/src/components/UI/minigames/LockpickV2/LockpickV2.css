@@ -1,0 +1,206 @@
+@import "../minigame-shell.scss";
+
+.lockpickv2__stage {
+  position: relative;
+  border: none;
+  padding: calc(0.6vh / var(--ui-scale, 1));
+  border-radius: 50%;
+  background: transparent;
+  cursor: default;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  user-select: none;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  align-self: center;
+  box-sizing: border-box;
+}
+
+.lockpickv2__stage--miss {
+  animation: lockpickv2-shake 260ms ease;
+}
+
+.lockpickv2__stage--hit {
+  animation: lockpickv2-pop 220ms ease;
+}
+
+@keyframes lockpickv2-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.025);
+  }
+}
+
+@keyframes lockpickv2-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1.5%);
+  }
+  75% {
+    transform: translateX(1.5%);
+  }
+}
+
+.lockpickv2__svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1;
+  display: block;
+  overflow: visible;
+}
+
+.lockpickv2__track {
+  stroke: #1f2023;
+  stroke-width: 6.4;
+}
+
+.lockpickv2__core {
+  fill: #141517;
+  stroke: #111214;
+  stroke-width: 1;
+}
+
+.lockpickv2__core-ring {
+  stroke: #2c2e33;
+  stroke-width: 0.7;
+}
+
+.lockpickv2__progress-track {
+  stroke: #25262b;
+  stroke-width: 1.8;
+}
+
+.lockpickv2__progress {
+  stroke: #69db7c;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 260ms ease;
+}
+
+.lockpickv2__segment {
+  stroke-width: 4.4;
+  stroke-linecap: butt;
+  transition:
+    stroke 160ms ease,
+    stroke-width 160ms ease,
+    opacity 160ms ease;
+}
+
+.lockpickv2__segment--red {
+  stroke: #6b3a3d;
+}
+
+.lockpickv2__segment--green {
+  stroke: #69db7c;
+  stroke-width: 6.2;
+}
+
+.lockpickv2__segment--done {
+  stroke: #2f5a3a;
+  stroke-width: 4.4;
+}
+
+.lockpickv2__segment--empty {
+  stroke: #25262b;
+  stroke-width: 4.4;
+}
+
+.lockpickv2__needle-body {
+  fill: #f1f3f5;
+}
+
+.lockpickv2__needle-tip {
+  fill: #f1f3f5;
+}
+
+.lockpickv2__stage--hit .lockpickv2__needle-tip {
+  fill: #69db7c;
+}
+
+.lockpickv2__stage--miss .lockpickv2__needle-tip {
+  fill: #ff8787;
+}
+
+.lockpickv2__stage--repeat .lockpickv2__needle-tip {
+  fill: #ffd43b;
+}
+
+.lockpickv2__stage--hit .lockpickv2__track {
+  stroke: #1f3125;
+}
+
+.lockpickv2__stage--miss .lockpickv2__track {
+  stroke: #362527;
+}
+
+/* Base icon and fill wrapper share the SAME single grid cell (grid-area: 1/1), so both are
+   centered by the exact same place-items rule - guarantees pixel-perfect overlap instead of
+   two separately-positioned copies that can drift apart. The fill icon is clipped by percent
+   (clip-path: inset from the top), so it's the SAME icon progressively revealed bottom-up,
+   not a second icon sliding over the first. */
+.lockpickv2__lock-wrap {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+}
+
+.lockpickv2__lock-icon,
+.lockpickv2__lock-fill {
+  grid-area: 1 / 1;
+}
+
+.lockpickv2__lock-icon {
+  display: block;
+}
+
+.lockpickv2__lock-icon--base {
+  color: #43454b;
+}
+
+.lockpickv2__lock-fill {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: clip-path 220ms ease;
+}
+
+.lockpickv2__lock-icon--fill {
+  color: #69db7c;
+}
+
+.lockpickv2__lives {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(0.5vh / var(--ui-scale, 1));
+}
+
+.lockpickv2__life {
+  width: calc(1.6vh / var(--ui-scale, 1));
+  height: calc(0.32vh / var(--ui-scale, 1));
+  border-radius: calc(0.16vh / var(--ui-scale, 1));
+  box-sizing: border-box;
+  background: #c1c2c5;
+}
+
+.lockpickv2__life--lost {
+  background: #2c2e33;
+}

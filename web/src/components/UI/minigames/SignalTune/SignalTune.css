@@ -1,0 +1,214 @@
+@import "../minigame-shell.scss";
+
+
+
+.signaltune__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.3vh / var(--ui-scale, 1));
+  width: 100%;
+}
+
+.signaltune__scope {
+  position: relative;
+  width: 100%;
+  height: calc(16vh / var(--ui-scale, 1));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--mg-board-bg);
+  overflow: hidden;
+}
+
+.signaltune__scope--locked {
+  border-color: var(--line-green);
+}
+
+.signaltune__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.signaltune__grid {
+  stroke: var(--bg-raised);
+  stroke-width: 1;
+}
+
+.signaltune__axis {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.signaltune__wave--target {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 5 4;
+}
+
+.signaltune__wave--yours {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 120ms ease;
+}
+
+.signaltune__scope--locked .signaltune__wave--yours {
+  stroke: var(--green);
+}
+
+.signaltune__legend {
+  position: absolute;
+  top: calc(0.55vh / var(--ui-scale, 1));
+  right: calc(0.7vh / var(--ui-scale, 1));
+  display: flex;
+  gap: calc(1vh / var(--ui-scale, 1));
+  font-size: calc(1.05vh / var(--ui-scale, 1));
+  font-weight: 700;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.signaltune__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(0.35vh / var(--ui-scale, 1));
+}
+
+.signaltune__dot {
+  width: calc(0.7vh / var(--ui-scale, 1));
+  height: calc(0.7vh / var(--ui-scale, 1));
+  border-radius: 2px;
+}
+
+.signaltune__dot--target {
+  background: var(--muted);
+}
+
+.signaltune__dot--yours {
+  background: var(--blue);
+}
+
+.signaltune__scope--locked .signaltune__dot--yours {
+  background: var(--green);
+}
+
+.signaltune__sliders {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1vh / var(--ui-scale, 1));
+}
+
+.signaltune__row {
+  display: grid;
+  grid-template-columns: calc(7.5vh / var(--ui-scale, 1)) 1fr calc(4vh / var(--ui-scale, 1));
+  align-items: center;
+  gap: calc(0.8vh / var(--ui-scale, 1));
+}
+
+.signaltune__label {
+  font-size: calc(1.2vh / var(--ui-scale, 1));
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.signaltune__value {
+  text-align: right;
+  font-size: calc(1.15vh / var(--ui-scale, 1));
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.signaltune__slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: calc(0.55vh / var(--ui-scale, 1));
+  border-radius: 2px;
+  background: var(--bg-field);
+  border: 1px solid var(--border-strong);
+  outline: none;
+  cursor: pointer;
+}
+
+.signaltune__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: calc(1.35vh / var(--ui-scale, 1));
+  height: calc(1.35vh / var(--ui-scale, 1));
+  border-radius: 3px;
+  background: var(--white);
+  border: 1px solid var(--border-hover);
+  cursor: grab;
+}
+
+.signaltune__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(1vh / var(--ui-scale, 1));
+  color: var(--muted);
+  font-size: calc(1.15vh / var(--ui-scale, 1));
+}
+
+.signaltune__meta strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.signaltune__checks {
+  display: flex;
+  gap: calc(0.7vh / var(--ui-scale, 1));
+}
+
+.signaltune__check {
+  width: calc(0.7vh / var(--ui-scale, 1));
+  height: calc(0.7vh / var(--ui-scale, 1));
+  border-radius: 2px;
+  background: var(--bg-field);
+  border: 1px solid var(--border-strong);
+}
+
+.signaltune__check--ok {
+  background: var(--green);
+  border-color: var(--green);
+
+}
+
+.signaltune__submit {
+  width: 100%;
+  border: 1px solid var(--line-blue);
+  background: var(--tint-blue);
+  color: var(--blue);
+  border-radius: var(--radius-sm);
+  padding: calc(0.9vh / var(--ui-scale, 1)) calc(1.2vh / var(--ui-scale, 1));
+  font-size: calc(1.35vh / var(--ui-scale, 1));
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+
+.signaltune__submit:hover:not(:disabled) {
+  background: var(--tint-blue-hover);
+  border-color: var(--blue);
+}
+
+.signaltune__submit:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.signaltune__submit--ready {
+  border-color: var(--line-green);
+  background: var(--tint-green);
+  color: var(--green);
+}

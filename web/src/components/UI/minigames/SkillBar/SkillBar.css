@@ -1,0 +1,5 @@
+@import "../minigame-shell.scss";
+
+.skillbar__cursor {
+  transform: translateX(-50%);
+}

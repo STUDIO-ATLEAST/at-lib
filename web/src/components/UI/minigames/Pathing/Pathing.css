@@ -1,0 +1,155 @@
+@import "../minigame-shell.scss";
+
+
+
+.pathing__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.2vh / var(--ui-scale, 1));
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.pathing__board {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1;
+  align-self: center;
+  flex: 1 1 auto;
+  min-height: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--mg-board-bg);
+  overflow: hidden;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.pathing__board--wrong {
+  animation: pathing-shake 220ms ease;
+}
+
+.pathing__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--bg-raised) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-raised) 1px, transparent 1px);
+  background-size: 10% 10%;
+  pointer-events: none;
+}
+
+.pathing__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pathing__line {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: calc(0.35vh / var(--ui-scale, 1));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pathing__line--drag {
+  stroke-dasharray: calc(0.55vh / var(--ui-scale, 1)) calc(0.4vh / var(--ui-scale, 1));
+  opacity: 0.85;
+}
+
+.pathing__start {
+  position: absolute;
+  width: calc(2.4vh / var(--ui-scale, 1));
+  height: calc(2.4vh / var(--ui-scale, 1));
+  border-radius: 50%;
+  border: 2px solid var(--blue);
+  background: var(--blue);
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  box-shadow: 0 0 0 2px var(--line-blue);
+}
+
+.pathing__start--active {
+  box-shadow:
+    0 0 0 calc(0.35vh / var(--ui-scale, 1)) var(--line-blue);
+}
+
+.pathing__dot {
+  position: absolute;
+  width: calc(2.2vh / var(--ui-scale, 1));
+  height: calc(2.2vh / var(--ui-scale, 1));
+  border-radius: 50%;
+  border: 2px solid var(--blue);
+  background: var(--bg-frame);
+  transform: translate(-50%, -50%);
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+  transition:
+    background 120ms ease,
+    box-shadow 120ms ease,
+    transform 80ms ease;
+}
+
+.pathing__dot:hover:not(:disabled) {
+  background: var(--bg-hover);
+  box-shadow: 0 0 0 2px var(--border-hover);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.pathing__dot--done {
+  background: var(--blue);
+  box-shadow: 0 0 0 2px var(--line-blue);
+  cursor: default;
+}
+
+.pathing__dot--current {
+  background: var(--blue);
+  box-shadow:
+    0 0 0 calc(0.35vh / var(--ui-scale, 1)) var(--line-blue);
+}
+
+.pathing__dot--wrong {
+  border-color: var(--red);
+  background: var(--tint-red);
+  box-shadow: 0 0 0 2px var(--line-red);
+}
+
+.pathing__dot:disabled {
+  cursor: default;
+}
+
+.pathing__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: calc(1vh / var(--ui-scale, 1));
+  color: var(--muted);
+  font-size: calc(1.15vh / var(--ui-scale, 1));
+}
+
+.pathing__meta strong {
+  color: var(--text);
+}
+
+@keyframes pathing-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(calc(-0.35vh / var(--ui-scale, 1)));
+  }
+  75% {
+    transform: translateX(calc(0.35vh / var(--ui-scale, 1)));
+  }
+}

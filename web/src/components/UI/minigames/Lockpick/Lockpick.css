@@ -1,0 +1,139 @@
+@import "../minigame-shell.scss";
+
+
+
+.lockpick__board {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  align-self: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--mg-board-bg);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.lockpick__board--wrong {
+  animation: lockpick-shake 220ms ease;
+}
+
+.lockpick__hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(11vh / var(--ui-scale, 1));
+  height: calc(11vh / var(--ui-scale, 1));
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-panel);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(0.35vh / var(--ui-scale, 1));
+  color: var(--text);
+  z-index: 3;
+  user-select: none;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    color 140ms ease;
+}
+
+.lockpick__hub--active {
+  cursor: grab;
+  border-color: var(--border-hover);
+  box-shadow: 0 0 0 2px var(--bg-hover);
+}
+
+.lockpick__hub--drag {
+  cursor: grabbing;
+}
+
+.lockpick__hub--aligned {
+  border-color: var(--green);
+  background: var(--tint-green);
+  box-shadow: 0 0 0 2px var(--line-green);
+  color: var(--green);
+}
+
+.lockpick__lock {
+  color: inherit;
+}
+
+.lockpick__progress {
+  font-size: calc(1.15vh / var(--ui-scale, 1));
+  font-weight: 700;
+  letter-spacing: calc(0.04vh / var(--ui-scale, 1));
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.lockpick__hub--aligned .lockpick__progress {
+  color: var(--green);
+}
+
+.lockpick__notch {
+  position: absolute;
+  top: calc(0.4vh / var(--ui-scale, 1));
+  left: 50%;
+  width: calc(1.1vh / var(--ui-scale, 1));
+  height: calc(0.35vh / var(--ui-scale, 1));
+  transform: translateX(-50%);
+  border-radius: 1px;
+  background: var(--blue);
+}
+
+.lockpick__node {
+  position: absolute;
+  width: calc(5.6vh / var(--ui-scale, 1));
+  height: calc(5.6vh / var(--ui-scale, 1));
+  transform: translate(-50%, -50%) scale(var(--lp-scale, 1));
+  border-radius: 50%;
+  border: 2px solid var(--muted);
+  background: var(--bg-field);
+  color: var(--white);
+  font-size: calc(2vh / var(--ui-scale, 1));
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 4;
+  opacity: var(--lp-opacity, 1);
+  box-shadow: 0 0 0 calc((1 - var(--lp-progress, 0)) * calc(1.1vh / var(--ui-scale, 1)))
+    var(--bg-hover);
+  transition: border-color 80ms ease, color 80ms ease;
+}
+
+.lockpick__node:hover {
+  border-color: var(--white);
+  background: var(--bg-hover);
+}
+
+.lockpick__node--wrong {
+  border-color: var(--red) !important;
+  background: var(--tint-red) !important;
+  color: var(--red) !important;
+  box-shadow: 0 0 0 2px var(--line-red);
+}
+
+@keyframes lockpick-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(calc(-0.4vh / var(--ui-scale, 1)));
+  }
+  75% {
+    transform: translateX(calc(0.4vh / var(--ui-scale, 1)));
+  }
+}

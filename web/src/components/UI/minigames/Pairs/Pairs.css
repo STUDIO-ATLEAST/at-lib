@@ -1,0 +1,107 @@
+@import "../minigame-shell.scss";
+
+.pairs__grid {
+  display: grid;
+  gap: calc(0.4vh / var(--ui-scale, 1));
+  padding: calc(0.55vh / var(--ui-scale, 1));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--mg-board-bg);
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  align-self: center;
+  box-sizing: border-box;
+}
+
+.pairs__card-btn {
+  position: relative;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 3px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-field);
+  padding: 0;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
+}
+
+.pairs__card-btn:hover:not(:disabled):not(.pairs__card-btn--flipped) {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+}
+
+.pairs__card-btn:disabled {
+  cursor: default;
+}
+
+.pairs__face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 3px;
+  backface-visibility: hidden;
+  transition: transform 220ms ease;
+}
+
+.pairs__face--back {
+  color: var(--muted);
+  font-size: calc(2.4vh / var(--ui-scale, 1));
+  font-weight: 700;
+  background: var(--bg-field);
+  border: 1px solid var(--border-strong);
+  transform: rotateY(0deg);
+}
+
+.pairs__face--front {
+  color: var(--white);
+  background: var(--bg-hover);
+  border: 1px solid var(--border-hover);
+  transform: rotateY(180deg);
+}
+
+.pairs__card-btn--flipped .pairs__face--back {
+  transform: rotateY(180deg);
+}
+
+.pairs__card-btn--flipped .pairs__face--front {
+  transform: rotateY(0deg);
+}
+
+.pairs__card-btn--matched .pairs__face--front {
+  background: var(--tint-green);
+  border-color: var(--line-green);
+  color: var(--green);
+}
+
+.pairs__card-btn--wrong {
+  animation: pairs-shake 280ms ease;
+}
+
+.pairs__card-btn--wrong .pairs__face--front {
+  background: var(--tint-red) !important;
+  border-color: var(--line-red) !important;
+  color: var(--red) !important;
+}
+
+@keyframes pairs-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(calc(-0.35vh / var(--ui-scale, 1)));
+  }
+  75% {
+    transform: translateX(calc(0.35vh / var(--ui-scale, 1)));
+  }
+}

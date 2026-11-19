@@ -1,0 +1,35 @@
+@import "../minigame-shell.scss";
+
+.binary__chip--one {
+  border-color: var(--line-blue);
+  background: var(--tint-blue);
+  color: var(--blue);
+}
+
+.binary__chip--glitch {
+  border-color: var(--line-red);
+  background: var(--tint-red);
+  color: var(--red);
+}
+
+.binary__chip--input {
+  cursor: pointer;
+}
+
+.binary__chip--input:hover:not(:disabled):not(.mgbar__chip--current) {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+}
+
+.binary__chip--input.binary__chip--one:hover:not(:disabled):not(.mgbar__chip--current) {
+  background: var(--tint-blue-hover);
+  border-color: var(--blue);
+}
+
+.binary__chip--input:disabled {
+  cursor: default;
+}
+
+.binary__label {
+  min-width: calc(var(--vp) * 90);
+}

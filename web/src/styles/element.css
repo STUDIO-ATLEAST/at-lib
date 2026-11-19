@@ -1,0 +1,168 @@
+/* Shared element-theme pieces for the HUD (dialogue, mission, timer, progress, text prompt,
+   gang zone). Same look as rm-banking: solid #1a1b1e panels, #141517 header strip with a
+   tinted icon tile, eyebrow subtitle, solid tinted chips. No glow, no tilt. */
+
+.el-panel {
+  overflow: hidden;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-family: "Tussilago", "Segoe UI", sans-serif;
+}
+
+.el-header {
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--vp));
+  padding: calc(10 * var(--vp)) calc(12 * var(--vp));
+  background: var(--bg-frame);
+  border-bottom: 1px solid var(--border);
+}
+
+.el-brand {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: calc(34 * var(--vp));
+  height: calc(34 * var(--vp));
+  border-radius: var(--radius-sm);
+  background: var(--tint-blue);
+  color: var(--blue);
+}
+
+.el-brand svg {
+  width: calc(16 * var(--vp));
+  height: calc(16 * var(--vp));
+}
+
+.el-heading {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: calc(2 * var(--vp));
+  min-width: 0;
+}
+
+.el-title {
+  overflow: hidden;
+  color: var(--white);
+  font-size: calc(14 * var(--vp));
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.el-subtitle {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: calc(10 * var(--vp));
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Count chip, neutral by default, solid tints for status */
+.el-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(4 * var(--vp));
+  flex-shrink: 0;
+  height: calc(22 * var(--vp));
+  padding: 0 calc(8 * var(--vp));
+  border-radius: var(--radius-sm);
+  background: var(--bg-field);
+  border: 1px solid var(--border-strong);
+  color: var(--white);
+  font-size: calc(11.5 * var(--vp));
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.el-badge--blue {
+  background: var(--tint-blue);
+  border-color: var(--line-blue);
+  color: var(--blue);
+}
+
+.el-badge--green {
+  background: var(--tint-green);
+  border-color: var(--line-green);
+  color: var(--green);
+}
+
+.el-badge--yellow {
+  background: var(--tint-yellow);
+  border-color: var(--line-yellow);
+  color: var(--yellow);
+}
+
+.el-badge--red {
+  background: var(--tint-red);
+  border-color: var(--line-red);
+  color: var(--red);
+}
+
+/* Small number / key chip */
+.el-num {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  min-width: calc(20 * var(--vp));
+  height: calc(20 * var(--vp));
+  padding: 0 calc(5 * var(--vp));
+  border-radius: 3px;
+  background: var(--tint-blue);
+  color: var(--blue);
+  font-size: calc(11 * var(--vp));
+  font-weight: 700;
+  line-height: 1;
+}
+
+.el-body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(6 * var(--vp));
+  padding: calc(10 * var(--vp)) calc(12 * var(--vp)) calc(12 * var(--vp));
+}
+
+/* Row tile, neutral grey on hover */
+.el-tile {
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--vp));
+  padding: calc(8 * var(--vp)) calc(10 * var(--vp));
+  border-radius: var(--radius-sm);
+  background: var(--bg-field);
+  border: 1px solid var(--border-strong);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.el-tile--active {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+}
+
+.el-tile--done {
+  background: var(--bg-raised);
+  border-color: var(--border);
+}
+
+.el-track {
+  height: calc(6 * var(--vp));
+  overflow: hidden;
+  border-radius: calc(2 * var(--vp));
+  background: var(--bg-sidebar);
+}
+
+.el-track > div {
+  height: 100%;
+  border-radius: calc(2 * var(--vp));
+  background: var(--blue);
+  transition: width 0.4s ease;
+}

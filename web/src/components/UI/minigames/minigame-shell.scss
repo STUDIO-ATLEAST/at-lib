@@ -1,0 +1,612 @@
+@use "../../../styles/vp" as *;
+
+/* Shared minigame shell, element theme (same tokens as rm-banking / rm-hud).
+   Every card game uses the same header / body / footer markup and the same card size
+   (vp @ 1920x1080). Flat solid panels, no glow, no tilt, neutral grey hover. */
+
+.mg {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  padding: 0;
+  pointer-events: auto;
+  z-index: 1000;
+  font-family: "Tussilago", "Segoe UI", sans-serif;
+  color: var(--text);
+  user-select: none;
+  animation: mg-fade-in 180ms ease;
+
+  /* Play-area backdrop shared by the hack games: solid sidebar fill with a faint dot grid */
+  --mg-board-bg: radial-gradient(var(--bg-raised) 1px, transparent 1px) 0 0 / #{vp(8)} #{vp(8)},
+    var(--bg-sidebar);
+}
+
+.mg *,
+.mg *::before,
+.mg *::after {
+  box-sizing: border-box;
+}
+
+@keyframes mg-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mg__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: vp(520);
+  height: vp(580);
+  overflow: hidden;
+  background: var(--bg-frame);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  animation: mg-card-in 220ms ease;
+}
+
+/* Modifiers kept for markup compat - same size as default */
+.mg__card--narrow,
+.mg__card--wide {
+  width: vp(520);
+  height: vp(580);
+}
+
+@keyframes mg-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(vp(8));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Header: tile icon, title, eyebrow subtitle, timer chip */
+.mg .mg__card .mg__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: vp(14);
+  height: vp(72);
+  padding: 0 vp(16);
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.mg .mg__card .mg__heading {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: vp(12);
+  row-gap: vp(2);
+  min-width: 0;
+}
+
+.mg .mg__card .mg__icon {
+  grid-row: 1 / span 2;
+  display: block;
+  flex-shrink: 0;
+  width: vp(40) !important;
+  height: vp(40) !important;
+  padding: vp(10);
+  border-radius: var(--radius);
+  background: var(--tint-blue);
+  border: none;
+  color: var(--blue) !important;
+  stroke: currentColor;
+}
+
+.mg .mg__card .mg__title {
+  align-self: end;
+  color: var(--white);
+  font-size: vp(17);
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Canonical "how many left / rounds" readout, next to the title */
+.mg .mg__card .mg__subtitle {
+  display: inline-block;
+  align-self: start;
+  margin-left: 0;
+  color: var(--muted);
+  font-size: vp(10.5);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mg__stages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: vp(5);
+  width: 100%;
+  padding-top: vp(2);
+}
+
+.mg .mg__stage,
+.mg__stage {
+  width: vp(12);
+  height: vp(12);
+  border-radius: vp(3);
+  background: var(--bg-field);
+  border: 1px solid var(--border-strong);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.mg .mg__stage--done,
+.mg__stage--done {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+/* Timer reads like a count chip */
+.mg .mg__card .mg__timer {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: vp(10);
+  min-width: vp(150);
+  padding: vp(8) vp(10);
+  border-radius: var(--radius-sm);
+  background: var(--bg-field);
+  border: 1px solid var(--border-strong);
+}
+
+.mg__timer-track {
+  flex: 1;
+  height: vp(6);
+  border-radius: vp(2);
+  background: var(--bg-sidebar);
+  overflow: hidden;
+}
+
+.mg__timer-fill {
+  height: 100%;
+  border-radius: vp(2);
+  background: var(--blue);
+  transition: width 50ms linear;
+}
+
+.mg__timer-text {
+  min-width: vp(34);
+  color: var(--white);
+  font-size: vp(13);
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.mg .mg__card .mg__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  /* stretch so game roots can flex-fill; games center their own content */
+  align-items: stretch;
+  justify-content: center;
+  gap: vp(12);
+  width: 100%;
+  min-height: 0;
+  padding: vp(16);
+  overflow: hidden;
+  background: var(--bg-frame);
+}
+
+/* Stack that fills the card body - header chips / meta as flex-shrink: 0 siblings */
+.mg__stack {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: vp(12);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Largest square that fits the remaining space (Pathing / LaserGrid pattern) */
+.mg__square {
+  flex: 1 1 auto;
+  align-self: center;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: 1;
+}
+
+.mg__meta {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: vp(10);
+  width: 100%;
+  padding: vp(9) vp(12);
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+}
+
+.mg__meta-label {
+  color: var(--muted);
+  font-size: vp(10.5);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mg__meta-value {
+  display: inline-flex;
+  align-items: center;
+  gap: vp(5);
+  color: var(--white);
+  font-size: vp(13);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Controls strip */
+.mg .mg__card .mg__footer {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-start;
+  gap: vp(10);
+  padding: vp(10) vp(16);
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  font-size: vp(12);
+  text-align: left;
+}
+
+.mg .mg__card .mg__footer::before {
+  content: "Controls";
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: vp(20);
+  padding: 0 vp(7);
+  border-radius: 3px;
+  background: var(--bg-hover);
+  color: var(--white);
+  font-size: vp(9.5);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mg__key {
+  display: inline-grid;
+  place-items: center;
+  min-width: vp(20);
+  height: vp(20);
+  padding: 0 vp(5);
+  border-radius: 3px;
+  border: none;
+  background: var(--tint-blue);
+  color: var(--blue);
+  font-family: inherit;
+  font-size: vp(11);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Win / lose overlay: solid, no blur */
+.mg__result {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: vp(10);
+  border-radius: 8px;
+  background: var(--bg-frame);
+  animation: mg-result-in 220ms ease;
+}
+
+.mg__result-icon {
+  display: grid;
+  place-items: center;
+  width: vp(64);
+  height: vp(64);
+  margin-bottom: vp(4);
+  border-radius: var(--radius);
+}
+
+.mg__result--ok .mg__result-icon {
+  color: var(--green);
+  background: var(--tint-green);
+  border: 1px solid var(--line-green);
+}
+
+.mg__result--fail .mg__result-icon {
+  color: var(--red);
+  background: var(--tint-red);
+  border: 1px solid var(--line-red);
+}
+
+.mg__result-title {
+  font-size: vp(26);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mg__result--ok .mg__result-title {
+  color: var(--green);
+}
+
+.mg__result--fail .mg__result-title {
+  color: var(--red);
+}
+
+/* Compact skill-check bar - bottom-center strip, no card/header/footer */
+
+.mgbar {
+  position: fixed;
+  left: 50%;
+  bottom: vp(90);
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: auto;
+  font-family: "Tussilago", "Segoe UI", sans-serif;
+  color: var(--text);
+  user-select: none;
+  animation: mgbar-in 180ms ease;
+}
+
+.mgbar *,
+.mgbar *::before,
+.mgbar *::after {
+  box-sizing: border-box;
+}
+
+@keyframes mgbar-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, vp(10));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.mgbar__box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: vp(14);
+  width: vp(600);
+  min-height: vp(62);
+  padding: vp(12) vp(14);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-frame);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: border-color 120ms ease;
+}
+
+.mgbar__box--auto {
+  width: auto;
+  min-width: vp(420);
+  max-width: vp(900);
+}
+
+.mgbar__box--ok {
+  border-color: var(--line-green);
+}
+
+.mgbar__box--fail {
+  border-color: var(--line-red);
+  animation: mgbar-shake 200ms ease;
+}
+
+.mgbar__key {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  min-width: vp(36);
+  height: vp(36);
+  padding: 0 vp(6);
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--tint-blue);
+  color: var(--blue);
+  font-family: inherit;
+  font-size: vp(15);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.mgbar__count {
+  flex-shrink: 0;
+  min-width: vp(34);
+  padding: vp(4) vp(8);
+  border-radius: var(--radius-sm);
+  background: var(--bg-field);
+  border: 1px solid var(--border-strong);
+  color: var(--muted);
+  font-size: vp(12);
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.mgbar__box--ok .mgbar__count {
+  background: var(--tint-green);
+  border-color: var(--line-green);
+  color: var(--green);
+}
+
+.mgbar__box--fail .mgbar__count {
+  background: var(--tint-red);
+  border-color: var(--line-red);
+  color: var(--red);
+}
+
+.mgbar__track {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: vp(36);
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
+.mgbar__track:disabled {
+  cursor: default;
+}
+
+.mgbar__rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: vp(14);
+  transform: translateY(-50%);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.mgbar__zone {
+  position: absolute;
+  top: vp(5);
+  bottom: vp(5);
+  border-radius: var(--radius-sm);
+  background: var(--tint-blue-hover);
+  border: 1px solid var(--blue);
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.mgbar__box--ok .mgbar__zone {
+  background: var(--tint-green-hover);
+  border-color: var(--green);
+}
+
+.mgbar__box--fail .mgbar__zone {
+  background: var(--tint-red-hover);
+  border-color: var(--red);
+}
+
+.mgbar__pill {
+  position: absolute;
+  top: vp(4);
+  bottom: vp(4);
+  width: vp(6);
+  border-radius: vp(2);
+  background: var(--white);
+  pointer-events: none;
+}
+
+.mgbar__timer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: vp(3);
+  background: var(--bg-sidebar);
+}
+
+.mgbar__timer-fill {
+  height: 100%;
+  background: var(--yellow);
+  transition: width 50ms linear;
+}
+
+.mgbar__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: vp(6);
+  flex: 1;
+  min-width: 0;
+}
+
+.mgbar__chip {
+  display: grid;
+  place-items: center;
+  width: vp(36);
+  height: vp(36);
+  padding: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-field);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: vp(15);
+  font-weight: 700;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.mgbar__chip svg {
+  width: vp(17);
+  height: vp(17);
+}
+
+.mgbar__chip--current {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+  color: var(--white);
+}
+
+.mgbar__chip--done {
+  background: var(--tint-blue);
+  border-color: var(--line-blue);
+  color: var(--blue);
+}
+
+.mgbar__chip--wrong {
+  background: var(--tint-red);
+  border-color: var(--line-red);
+  color: var(--red);
+}
+
+@keyframes mgbar-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(vp(-4));
+  }
+  75% {
+    transform: translateX(vp(4));
+  }
+}
+
+@keyframes mg-result-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

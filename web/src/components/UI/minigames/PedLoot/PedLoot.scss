@@ -1,0 +1,95 @@
+@use "../../../../styles/vp" as *;
+@import "../minigame-shell.scss";
+
+/* Pickpocket in the skill-check bar: pocket icons over a rail, one window per loot slot */
+
+.pedloot__box {
+  min-width: vp(520);
+}
+
+.pedloot__track {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: vp(6);
+  height: auto;
+  min-height: vp(56);
+}
+
+.pedloot__slots {
+  display: flex;
+  width: 100%;
+}
+
+.pedloot__slot {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  height: vp(26);
+  margin: 0 vp(2);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  color: var(--muted);
+  transition:
+    background 100ms ease,
+    border-color 100ms ease;
+}
+
+.pedloot__slot--active {
+  border-color: var(--border-hover);
+  background: var(--bg-hover);
+}
+
+.pedloot__slot--hot {
+  border-color: var(--line-blue);
+  background: var(--tint-blue);
+}
+
+.pedloot__slot--empty.pedloot__slot--active {
+  border-color: var(--line-red);
+  background: var(--tint-red);
+}
+
+.pedloot__slot--taken {
+  border-color: var(--line-green);
+  background: var(--tint-green);
+}
+
+.pedloot__icon {
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.pedloot__icon--empty {
+  color: var(--red);
+}
+
+.pedloot__icon--lock {
+  color: var(--muted);
+}
+
+.pedloot__img {
+  width: vp(22);
+  height: vp(22);
+  object-fit: contain;
+}
+
+.pedloot__bar {
+  position: relative;
+  width: 100%;
+  height: vp(22);
+}
+
+.pedloot__zone--taken {
+  background: var(--bg-field);
+  border-color: var(--border-strong);
+}
+
+.pedloot__cursor {
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.pedloot__cursor--hot {
+  background: var(--blue);
+}

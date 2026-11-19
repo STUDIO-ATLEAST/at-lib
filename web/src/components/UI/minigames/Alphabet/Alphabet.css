@@ -1,0 +1,9 @@
+@import "../minigame-shell.scss";
+
+.alphabet__chip {
+  cursor: pointer;
+}
+
+.alphabet__chip:disabled {
+  cursor: default;
+}

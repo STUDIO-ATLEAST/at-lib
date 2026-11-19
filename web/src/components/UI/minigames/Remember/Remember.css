@@ -1,0 +1,90 @@
+@import "../minigame-shell.scss";
+
+.remember__grid {
+  display: grid;
+  gap: calc(0.35vh / var(--ui-scale, 1));
+  padding: calc(0.55vh / var(--ui-scale, 1));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--mg-board-bg);
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  align-self: center;
+  box-sizing: border-box;
+}
+
+.remember__cell {
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 3px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-field);
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.remember__cell:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+}
+
+.remember__cell:disabled {
+  cursor: default;
+}
+
+.remember__cell--lit {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.remember__cell--wrong {
+  background: var(--red) !important;
+  border-color: var(--red) !important;
+  animation: remember-shake 280ms ease;
+}
+
+.remember__lives {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(0.5vh / var(--ui-scale, 1));
+  flex-shrink: 0;
+}
+
+.remember__life {
+  width: calc(0.85vh / var(--ui-scale, 1));
+  height: calc(0.85vh / var(--ui-scale, 1));
+  border-radius: calc(0.15vh / var(--ui-scale, 1));
+  box-sizing: border-box;
+  background: var(--blue);
+  border: 1px solid var(--blue);
+}
+
+.remember__life--lost {
+  background: var(--bg-field);
+  border-color: var(--border-hover);
+}
+
+@keyframes remember-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(calc(-0.35vh / var(--ui-scale, 1)));
+  }
+  75% {
+    transform: translateX(calc(0.35vh / var(--ui-scale, 1)));
+  }
+}

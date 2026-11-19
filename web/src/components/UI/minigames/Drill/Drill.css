@@ -1,0 +1,114 @@
+@import "../minigame-shell.scss";
+
+
+
+.drill__body {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: calc(1vh / var(--ui-scale, 1));
+}
+
+.drill__board {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1 / 1;
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-height: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--mg-board-bg);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.drill__board--ok {
+  border-color: var(--green);
+}
+
+.drill__board--bad {
+  border-color: var(--red);
+}
+
+/* Lane track - 4 equal columns; bit sits in the active column */
+.drill__lanes {
+  position: absolute;
+  inset: calc(1.4vh / var(--ui-scale, 1)) calc(1.6vh / var(--ui-scale, 1)) calc(1.2vh / var(--ui-scale, 1));
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: calc(0.7vh / var(--ui-scale, 1));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.drill__lane {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+}
+
+.drill__lane--active {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+}
+
+/* Same columns as the lanes; bottom stops at the bit so the bar lands on it */
+.drill__bar-track {
+  position: absolute;
+  inset: calc(1.4vh / var(--ui-scale, 1)) calc(1.6vh / var(--ui-scale, 1)) calc(calc(1.35vh / var(--ui-scale, 1)) + calc(4.6vh / var(--ui-scale, 1)) + calc(0.3vh / var(--ui-scale, 1)));
+  pointer-events: none;
+  z-index: 2;
+}
+
+.drill__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: calc(2.6vh / var(--ui-scale, 1));
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: calc(0.7vh / var(--ui-scale, 1));
+  transform: translateY(-100%);
+}
+
+.drill__segment {
+  min-width: 0;
+  height: 100%;
+  border-radius: calc(0.45vh / var(--ui-scale, 1));
+  border: 1px solid var(--bg-frame);
+}
+
+.drill__bit {
+  position: absolute;
+  bottom: calc(0.15vh / var(--ui-scale, 1));
+  left: 50%;
+  width: calc(3.4vh / var(--ui-scale, 1));
+  height: calc(4.6vh / var(--ui-scale, 1));
+  transform: translateX(-50%);
+  z-index: 3;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--bit-color, #4dabf7) 0 calc(0.4vh / var(--ui-scale, 1)),
+    var(--bg-frame) calc(0.4vh / var(--ui-scale, 1)) calc(0.8vh / var(--ui-scale, 1))
+  );
+  clip-path: polygon(18% 100%, 82% 100%, 82% 34%, 50% 0, 18% 34%);
+  transition: transform 90ms ease;
+}
+
+.drill__board--ok .drill__bit {
+  transform: translateX(-50%) translateY(calc(0.5vh / var(--ui-scale, 1)));
+}
+
+.drill__board--bad .drill__bit {
+  transform: translateX(-50%) translateY(calc(0.9vh / var(--ui-scale, 1)));
+}
