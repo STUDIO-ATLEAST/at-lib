@@ -52,7 +52,7 @@ Every game has easy, medium and hard presets, a numeric difficulty from 1 to 5, 
 
 ## Installation
 
-1. Download the latest release and put the `at-lib` folder in your `resources` directory.
+1. Download the latest release from [GitHub](https://github.com/STUDIO-ATLEAST/at-lib/releases), unzip it, rename the folder to `at-lib` and put it in your `resources` directory.
 2. Start it after ox_lib in `server.cfg`:
 
    ```bash
