@@ -1,6 +1,6 @@
 # AT Lib
 
-![at-lib minigames](images/minigames.jpg)
+![AT-LIB](images/thumbnail.jpg)
 
 at-lib is a free UI library for FiveM. It gives your scripts one shared set of HUD pieces and **34 minigames**: NPC dialogue, mission panels, timers, progress bars, key prompts, gang zone capture cards, status cards pinned in the world, and minigames for hacking, lockpicking, safe cracking, skill checks and looting. Everything is a client export, so any resource can use it with one line of Lua. The interface is built with Svelte 5 and ships prebuilt, so there is nothing to compile.
 
@@ -94,6 +94,8 @@ end)
 ```
 
 ## Minigames
+
+![Minigames](images/minigames.jpg)
 
 ```lua
 -- Generic
