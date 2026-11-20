@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import Check from "@lucide/svelte/icons/check";
   import Target from "@lucide/svelte/icons/target";
+  import ObjectiveTrack from "./ObjectiveTrack.svelte";
   import { onNui } from "../../lib/nui";
   import { mantineSlide } from "../../lib/transitions";
   import {
@@ -13,7 +13,7 @@
   } from "../../stores/hud.svelte";
   import type { MissionData } from "../../types/hud";
   import { isEnvBrowser } from "../../utils/misc";
-  import { vp } from "../../utils/vp";
+  import { square, vp } from "../../utils/vp";
 
   const inBrowser = isEnvBrowser();
 
@@ -32,80 +32,163 @@
     missionStatus.visible && !!missionStatus.data && (!inBrowser || devPreview.toggles.mission),
   );
 
-  const completed = $derived(
-    missionStatus.data?.objectives.filter((objective) => objective.completed).length ?? 0,
-  );
-  const total = $derived(missionStatus.data?.objectives.length ?? 0);
+  const objectives = $derived(missionStatus.data?.objectives ?? []);
+  const completed = $derived(objectives.filter((objective) => objective.completed).length);
+  const total = $derived(objectives.length);
+  const currentIndex = $derived(objectives.findIndex((objective) => !objective.completed));
 </script>
 
 {#if show && missionStatus.data}
   {@const data = missionStatus.data}
-  <div class="mission-anchor" style={`left: ${vp(20)};`}>
+  <div class="anchor" style={`left: ${vp(20)};`}>
     <div
-      class="el-panel"
-      style={`width: min(${vp(280)}, calc(100vw / var(--ui-scale, 1) - ${vp(32)}));`}
+      class="ms"
+      style={`width: min(${vp(300)}, calc(100vw / var(--ui-scale, 1) - ${vp(32)}));`}
       transition:mantineSlide={{ axis: "x", distance: "-100%", duration: 400 }}
     >
-      <div class="el-header">
-        <div class="el-brand"><Target /></div>
-        <div class="el-heading">
-          <span class="el-title">{data.title}</span>
-          <span class="el-subtitle">Objectives</span>
+      <div class="head">
+        <span class="head-icon"><Target size={17} style={square(17)} strokeWidth={2.2} /></span>
+        <div class="head-text">
+          <span class="title">{data.title}</span>
+          <span class="eyebrow">Objectives</span>
         </div>
-        <span class="el-badge" class:el-badge--green={total > 0 && completed === total}>
-          {completed} / {Math.max(1, total)}
-        </span>
       </div>
 
-      <div class="el-body">
-        {#each data.objectives as objective, index (objective.id)}
-          <div class="el-tile" class:el-tile--done={objective.completed}>
-            {#if objective.completed}
-              <span class="mission-check"><Check size={12} style={`width: ${vp(12)}; height: ${vp(12)};`} strokeWidth={3} /></span>
-            {:else}
-              <span class="el-num">{index + 1}</span>
-            {/if}
-            <span class="mission-objective-label" class:mission-objective-label--done={objective.completed}>
-              {objective.label}
-            </span>
-          </div>
-        {/each}
-        <div class="el-track" style={`margin-top: ${vp(4)};`}>
-          <div style={`width: ${(completed / Math.max(1, total)) * 100}%;`}></div>
-        </div>
-      </div>
+      {#if total > 0}
+        <ul class="rows">
+          {#each objectives as objective, index (objective.id)}
+            <li class="row" class:done={objective.completed} class:active={index === currentIndex}>
+              <span class="mark"></span>
+              <span class="row-label">{objective.label}</span>
+            </li>
+          {/each}
+        </ul>
+        <ObjectiveTrack value={completed} max={total} />
+      {/if}
     </div>
   </div>
 {/if}
 
 <style>
-  .mission-anchor {
+  /* Same family as the rm-hud objective card and at-lib MissionCard: solid #141517 panel,
+     30px square icon tile, uppercase title, 5px square marks, 17px track with count tag. */
+  .anchor {
     position: fixed;
     top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
     z-index: 100;
+    pointer-events: none;
+    transform: translateY(-50%);
   }
 
-  .mission-objective-label {
-    font-size: calc(12.5 * var(--vp));
-    line-height: 1.4;
+  .ms {
+    display: flex;
+    flex-direction: column;
+    gap: calc(12 * var(--vp));
+    box-sizing: border-box;
+    padding: calc(16 * var(--vp)) calc(16 * var(--vp)) calc(14 * var(--vp));
+    overflow: hidden;
+    background: var(--bg-frame);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 calc(10 * var(--vp)) calc(30 * var(--vp)) rgba(0, 0, 0, 0.35);
     color: var(--text);
+    font-family: "Tussilago", "Segoe UI", sans-serif;
   }
 
-  .mission-check {
+  .head {
+    display: flex;
+    align-items: center;
+    gap: calc(10 * var(--vp));
+  }
+
+  .head-icon {
     display: inline-grid;
     place-items: center;
     flex-shrink: 0;
-    width: calc(20 * var(--vp));
-    height: calc(20 * var(--vp));
+    width: calc(30 * var(--vp));
+    height: calc(30 * var(--vp));
     border-radius: 3px;
-    background: var(--tint-green);
-    color: var(--green);
+    background: var(--bg-field);
+    border: 1px solid var(--border-strong);
+    color: var(--white);
   }
 
-  .mission-objective-label--done {
+  .head-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: calc(3 * var(--vp));
+    min-width: 0;
+  }
+
+  .title {
+    color: var(--white);
+    font-size: calc(15 * var(--vp));
+    letter-spacing: 0.03em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
+  }
+
+  .eyebrow {
     color: var(--muted);
+    font-size: calc(10 * var(--vp));
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .rows {
+    display: flex;
+    flex-direction: column;
+    gap: calc(8 * var(--vp));
+    margin: 0;
+    padding: calc(12 * var(--vp)) 0 0;
+    border-top: 1px solid var(--border);
+    list-style: none;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: calc(8 * var(--vp));
+    color: var(--text);
+    font-size: calc(12.5 * var(--vp));
+    line-height: 1.35;
+    transition: color 150ms ease;
+  }
+
+  .mark {
+    flex-shrink: 0;
+    width: calc(5 * var(--vp));
+    height: calc(5 * var(--vp));
+    min-width: 3px;
+    min-height: 3px;
+    background: var(--dim);
+    transition: background 150ms ease;
+  }
+
+  .row.active {
+    color: var(--white);
+  }
+
+  .row.active .mark {
+    background: var(--blue);
+  }
+
+  .row.done {
+    color: var(--muted);
+  }
+
+  .row.done .mark {
+    background: var(--green);
+  }
+
+  .row-label {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .row.done .row-label {
     text-decoration: line-through;
     text-decoration-color: var(--dim);
   }

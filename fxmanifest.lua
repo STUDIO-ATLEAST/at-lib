@@ -3,7 +3,7 @@ game 'gta5'
 
 name 'at-lib'
 description 'AT Library - Dialogue, Mission, Timer, Progress, TextUI, GangZone and minigames (NUI)'
-version '1.2.0'
+version '1.2.1'
 lua54 'yes'
 
 ui_page 'web/build/index.html'

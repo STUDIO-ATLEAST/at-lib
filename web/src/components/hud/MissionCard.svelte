@@ -3,9 +3,9 @@
   import { Tween } from "svelte/motion";
   import { cubicOut } from "svelte/easing";
   import { fade, fly } from "svelte/transition";
-  import Check from "@lucide/svelte/icons/check";
   import Navigation from "@lucide/svelte/icons/navigation";
   import MissionGaugeView from "./MissionGauge.svelte";
+  import ObjectiveTrack from "./ObjectiveTrack.svelte";
   import { icon, ListChecks, Package, Users } from "../../lib/icons";
   import { onNui } from "../../lib/nui";
   import { square } from "../../utils/vp";
@@ -21,7 +21,6 @@
   import type { MissionData, MissionDetailsUpdate, MissionStep } from "../../types/hud";
   import { isEnvBrowser } from "../../utils/misc";
 
-  const MAX_SEGMENTS = 20;
   const MAX_STEPS = 8;
   const STEP_WINDOW = 6;
   const GAIN_MS = 1800;
@@ -77,9 +76,6 @@
   const stepCount = $derived(activeStep?.count ?? 0);
   const stepDone = $derived(Math.min(activeStep?.progress ?? 0, stepCount));
   const showStepBar = $derived(stepCount > 1 && tasks.length === 0);
-  const stepSlots = $derived(
-    showStepBar && stepCount <= MAX_SEGMENTS ? Array.from({ length: stepCount }, (_, index) => index) : [],
-  );
   const compactSteps = $derived(tasks.length > 0);
   const nextStep = $derived(
     activeIndex < 0 ? undefined : steps.slice(activeIndex + 1).find((step) => !step.done),
@@ -103,9 +99,6 @@
   const hiddenAfter = $derived(total - stepRange.end);
 
   const optional = $derived(missionCard.data?.optional || []);
-  const segments = $derived(
-    total <= MAX_SEGMENTS ? Array.from({ length: total }, (_, index) => index) : [],
-  );
 
   let now = $state(Date.now());
   const liveGauges = $derived(
@@ -161,106 +154,93 @@
 {#if show && missionCard.data}
   {@const data = missionCard.data}
   <aside class="card" bind:offsetHeight={missionCardLayout.height} transition:fade={{ duration: 150 }}>
-    <header class="header">
-      <div class="mission-icon"><MissionIcon size={16} style={square(16)} strokeWidth={2.2} /></div>
-      <div class="mission">
-        <span class="mission-label">{data.title}</span>
-        {#if meta}<span class="mission-meta">{meta}</span>{/if}
+    <header class="head">
+      <span class="head-icon"><MissionIcon size={17} style={square(17)} strokeWidth={2.2} /></span>
+      <div class="head-text">
+        <span class="title">{data.title}</span>
+        {#if meta}<span class="meta">{meta}</span>{/if}
       </div>
       {#if data.badge?.text}
-        <span class="badge" transition:fade={{ duration: 150 }}><BadgeIcon size={12} style={square(12)} strokeWidth={2.2} />{data.badge.text}</span>
+        <span class="tag" transition:fade={{ duration: 150 }}><BadgeIcon size={11} style={square(11)} strokeWidth={2.2} />{data.badge.text}</span>
       {/if}
     </header>
 
-    <section class="stage">
-      {#key currentLabel}
-        <div class="stage-current" in:fade={{ duration: 150 }}>
-          <div class="stage-head">
-            <span class="stage-label">{currentLabel}</span>
-            {#if stepCount > 1}
-              <span class="stage-count">{stepDone} / {stepCount}</span>
+    {#key currentLabel}
+      <section class="current" in:fade={{ duration: 150 }}>
+        {#if currentLabel}
+          <div class="line">
+            <span class="mark" class:mark--done={allDone}></span>
+            <span class="line-text">{currentLabel}</span>
+            {#if stepCount > 1 && !showStepBar}
+              <span class="line-count">{stepDone}/{stepCount}</span>
             {/if}
-          </div>
-          {#if data.detail && !compactSteps}
-            <p class="detail">{data.detail}</p>
-          {/if}
-
-          {#if tasks.length > 0}
-            <ul class="tasks">
-              {#each tasks as task, index (task.id ?? index)}
-                <li class="task" class:done={task.done} class:active={task.id !== undefined && task.id === activeTask}>
-                  <span class="tick">
-                    {#if task.done}<Check size={10} style={square(10)} strokeWidth={3} />{/if}
-                  </span>
-                  <span class="task-label">{task.label}</span>
-                  {#if task.count}
-                    <span class="task-count">{task.progress ?? 0}/{task.count}</span>
-                  {/if}
-                </li>
-              {/each}
-            </ul>
-          {:else if showStepBar}
-            {#if stepSlots.length > 0}
-              <div class="segments">
-                {#each stepSlots as index (index)}
-                  <span class="segment" class:filled={index < stepDone}></span>
-                {/each}
-              </div>
-            {:else}
-              <div class="track"><div class="fill" style:width="{(stepDone / stepCount) * 100}%"></div></div>
-            {/if}
-          {/if}
-        </div>
-      {/key}
-
-      {#if compactSteps}
-        {#if nextStep}
-          <div class="next">
-            <span class="next-label">Next</span>
-            <span class="next-text">{nextStep.label}</span>
           </div>
         {/if}
-      {:else if total > 0}
-        <ul class="checklist">
-          {#if hiddenBefore > 0}
-            <li class="step-more">{hiddenBefore} completed</li>
-          {/if}
-          {#each visibleSteps as { step, index } (step.id ?? index)}
-            <li class="task" class:done={step.done} class:active={index === activeIndex}>
-              <span class="tick">
-                {#if step.done}<Check size={10} style={square(10)} strokeWidth={3} />{/if}
-              </span>
-              <span class="task-label">{step.label}</span>
-              {#if step.count && step.count > 1 && !step.done && index !== activeIndex}
-                <span class="task-count">{step.progress ?? 0}/{step.count}</span>
-              {/if}
-            </li>
-          {/each}
-          {#if hiddenAfter > 0}
-            <li class="step-more">+{hiddenAfter} more</li>
-          {/if}
-        </ul>
-      {/if}
+        {#if data.detail && !compactSteps}
+          <p class="detail">{data.detail}</p>
+        {/if}
 
-      {#if optional.length > 0}
-        <div class="optional" transition:fade={{ duration: 150 }}>
-          <span class="optional-title">Optional</span>
-          <ul class="optional-list">
-            {#each optional as item, index (item.id ?? index)}
-              <li class="optional-item" class:done={item.done} transition:fade={{ duration: 150 }}>
-                <span class="optional-tick">
-                  {#if item.done}<Check size={8} style={square(8)} strokeWidth={3} />{/if}
-                </span>
-                <span class="optional-label">{item.label}</span>
+        {#if tasks.length > 0}
+          <ul class="rows">
+            {#each tasks as task, index (task.id ?? index)}
+              <li class="row" class:done={task.done} class:active={task.id !== undefined && task.id === activeTask}>
+                <span class="mark"></span>
+                <span class="row-label">{task.label}</span>
+                {#if task.count}
+                  <span class="row-count">{task.progress ?? 0}/{task.count}</span>
+                {/if}
               </li>
             {/each}
           </ul>
+        {:else if showStepBar}
+          <ObjectiveTrack value={stepDone} max={stepCount} />
+        {/if}
+      </section>
+    {/key}
+
+    {#if compactSteps}
+      {#if nextStep}
+        <div class="next section">
+          <span class="eyebrow">Next</span>
+          <span class="next-text">{nextStep.label}</span>
         </div>
       {/if}
-    </section>
+    {:else if total > 0}
+      <ul class="rows section">
+        {#if hiddenBefore > 0}
+          <li class="row-more">{hiddenBefore} completed</li>
+        {/if}
+        {#each visibleSteps as { step, index } (step.id ?? index)}
+          <li class="row" class:done={step.done} class:active={index === activeIndex}>
+            <span class="mark"></span>
+            <span class="row-label">{step.label}</span>
+            {#if step.count && step.count > 1 && !step.done && index !== activeIndex}
+              <span class="row-count">{step.progress ?? 0}/{step.count}</span>
+            {/if}
+          </li>
+        {/each}
+        {#if hiddenAfter > 0}
+          <li class="row-more">+{hiddenAfter} more</li>
+        {/if}
+      </ul>
+    {/if}
+
+    {#if optional.length > 0}
+      <div class="optional section" transition:fade={{ duration: 150 }}>
+        <span class="eyebrow">Optional</span>
+        <ul class="rows">
+          {#each optional as item, index (item.id ?? index)}
+            <li class="row row--optional" class:done={item.done} transition:fade={{ duration: 150 }}>
+              <span class="mark mark--hollow"></span>
+              <span class="row-label">{item.label}</span>
+            </li>
+          {/each}
+        </ul>
+      </div>
+    {/if}
 
     {#if meters.length > 0 || chips.length > 0}
-      <section class="gauges">
+      <section class="gauges section">
         {#each meters as gauge (gauge.id)}
           <div transition:fade={{ duration: 150 }}><MissionGaugeView {gauge} /></div>
         {/each}
@@ -280,39 +260,25 @@
     {/if}
 
     {#if stat}
-      <footer class="footer">
-        <div class="footer-row">
-          <span class="progress-label"><StatIcon size={13} style={square(13)} strokeWidth={2.2} />{stat.label}</span>
-          <span class="stat">
-            {#if gain > 0}
-              {#key gainKey}
-                <span class="gain" in:fly={{ y: 4, duration: 150 }} out:fade={{ duration: 150 }}>+{formatStat(gain)}</span>
-              {/key}
-            {/if}
-            <span class="stat-value" class:money={stat.format === "money"}>{formatStat(statValue.current)}</span>
-          </span>
-        </div>
+      <footer class="stat-row section">
+        <span class="stat-label"><StatIcon size={13} style={square(13)} strokeWidth={2.2} />{stat.label}</span>
+        <span class="stat">
+          {#if gain > 0}
+            {#key gainKey}
+              <span class="gain" in:fly={{ y: 4, duration: 150 }} out:fade={{ duration: 150 }}>+{formatStat(gain)}</span>
+            {/key}
+          {/if}
+          <span class="stat-value" class:money={stat.format === "money"}>{formatStat(statValue.current)}</span>
+        </span>
       </footer>
     {:else if total > 0}
-      <footer class="footer">
-        <div class="footer-row">
-          <span class="progress-label"><ListChecks size={13} style={square(13)} strokeWidth={2.2} />Progress</span>
-          <span class="progress-value">{completed} / {total}</span>
-        </div>
-        {#if segments.length > 0}
-          <div class="segments">
-            {#each segments as index (index)}
-              <span class="segment" class:filled={index < completed}></span>
-            {/each}
-          </div>
-        {:else}
-          <div class="track"><div class="fill" style:width="{(completed / total) * 100}%"></div></div>
-        {/if}
+      <footer class="section">
+        <ObjectiveTrack value={completed} max={total} />
       </footer>
     {/if}
 
     {#if data.hint}
-      <div class="hint" transition:fade={{ duration: 150 }}>
+      <div class="hint section" transition:fade={{ duration: 150 }}>
         <Navigation size={12} style={square(12)} strokeWidth={2.4} />
         <span>{data.hint}</span>
       </div>
@@ -321,24 +287,28 @@
 {/if}
 
 <style>
-  /* Element theme mission card: solid panel, #141517 header strip, tinted icon tile,
-     neutral grey rows, solid tinted chips. Flat, no tilt, no glow. */
+  /* Same family as the rm-hud objective card: solid #141517 panel, #26272b border, 4px radius,
+     30px square icon tile, uppercase title, 5px square marks, 17px track with a centered count tag.
+     Flat, no tilt, no glow, no circles. */
   .card {
     position: fixed;
     top: 50%;
-    right: calc(24 * var(--vp));
+    right: calc(20 * var(--vp));
     z-index: 100;
     display: flex;
     flex-direction: column;
-    width: calc(280 * var(--vp));
+    gap: calc(12 * var(--vp));
+    box-sizing: border-box;
+    width: calc(320 * var(--vp));
+    padding: calc(16 * var(--vp)) calc(16 * var(--vp)) calc(14 * var(--vp));
     overflow: hidden;
-    background: var(--bg-panel);
+    background: var(--bg-frame);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    border-radius: 4px;
+    box-shadow: 0 calc(10 * var(--vp)) calc(30 * var(--vp)) rgba(0, 0, 0, 0.35);
     color: var(--text);
     font-family: "Tussilago", "Segoe UI", sans-serif;
-    font-size: calc(13 * var(--vp));
+    font-size: calc(12.5 * var(--vp));
     pointer-events: none;
     transform: translateY(-50%);
   }
@@ -349,303 +319,220 @@
     list-style: none;
   }
 
-  .header {
+  .section {
+    padding-top: calc(12 * var(--vp));
+    border-top: 1px solid var(--border);
+  }
+
+  /* Header */
+  .head {
     display: flex;
     align-items: center;
     gap: calc(10 * var(--vp));
-    padding: calc(10 * var(--vp)) calc(12 * var(--vp));
-    background: var(--bg-frame);
-    border-bottom: 1px solid var(--border);
   }
 
-  .mission-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .head-icon {
+    display: inline-grid;
+    place-items: center;
     flex-shrink: 0;
-    width: calc(34 * var(--vp));
-    height: calc(34 * var(--vp));
-    border-radius: var(--radius-sm);
-    background: var(--tint-blue);
-    color: var(--blue);
+    width: calc(30 * var(--vp));
+    height: calc(30 * var(--vp));
+    border-radius: 3px;
+    background: var(--bg-field);
+    border: 1px solid var(--border-strong);
+    color: var(--white);
   }
 
-  .mission {
+  .head-text {
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: calc(2 * var(--vp));
+    gap: calc(3 * var(--vp));
     min-width: 0;
   }
 
-  .mission-label {
-    overflow: hidden;
+  .title {
     color: var(--white);
-    font-size: calc(14 * var(--vp));
-    font-weight: 700;
-    line-height: 1.25;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: calc(15 * var(--vp));
+    letter-spacing: 0.03em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
   }
 
-  .mission-meta {
+  .meta,
+  .eyebrow {
+    overflow: hidden;
     color: var(--muted);
     font-size: calc(10 * var(--vp));
-    font-weight: 600;
     letter-spacing: 0.12em;
-    text-transform: uppercase;
-    overflow: hidden;
     text-overflow: ellipsis;
+    text-transform: uppercase;
     white-space: nowrap;
   }
 
-  .badge {
+  .tag {
     display: inline-flex;
     align-items: center;
     gap: calc(5 * var(--vp));
     flex-shrink: 0;
-    height: calc(22 * var(--vp));
-    padding: 0 calc(8 * var(--vp));
-    border-radius: var(--radius-sm);
-    background: var(--bg-field);
+    padding: 0 calc(7 * var(--vp));
+    border-radius: 2px;
+    background: #101113;
     border: 1px solid var(--border-strong);
     color: var(--white);
-    font-size: calc(11 * var(--vp));
-    font-weight: 700;
+    font-size: calc(10.5 * var(--vp));
     font-variant-numeric: tabular-nums;
+    line-height: calc(18 * var(--vp));
   }
 
-  .stage {
+  /* Current objective */
+  .current {
     display: flex;
     flex-direction: column;
     gap: calc(8 * var(--vp));
-    padding: calc(10 * var(--vp)) calc(12 * var(--vp));
   }
 
-  .stage-current {
+  .line {
     display: flex;
-    flex-direction: column;
-    gap: calc(5 * var(--vp));
+    align-items: center;
+    gap: calc(8 * var(--vp));
   }
 
-  .stage-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: calc(10 * var(--vp));
-  }
-
-  .stage-label {
+  .line-text {
+    flex: 1;
+    min-width: 0;
     color: var(--white);
-    font-size: calc(14 * var(--vp));
-    font-weight: 700;
-    line-height: 1.3;
+    font-size: calc(13 * var(--vp));
+    line-height: 1.35;
   }
 
-  .stage-count {
+  .line-count,
+  .row-count {
     flex-shrink: 0;
-    color: var(--blue);
-    font-size: calc(12 * var(--vp));
-    font-weight: 700;
+    color: var(--muted);
+    font-size: calc(11 * var(--vp));
     font-variant-numeric: tabular-nums;
   }
 
   .detail {
     margin: 0;
     color: var(--muted);
-    font-size: calc(12 * var(--vp));
-    line-height: 1.4;
+    font-size: calc(11.5 * var(--vp));
+    line-height: 1.45;
     white-space: pre-line;
   }
 
-  .checklist,
-  .optional,
-  .next {
-    padding-top: calc(8 * var(--vp));
-    border-top: 1px solid var(--border);
+  /* 5px square marks: blue = current, green = done, grey = waiting */
+  .mark {
+    flex-shrink: 0;
+    width: calc(5 * var(--vp));
+    height: calc(5 * var(--vp));
+    min-width: 3px;
+    min-height: 3px;
+    background: var(--blue);
+    transition: background 150ms ease;
   }
 
-  .checklist {
+  .mark--done {
+    background: var(--green);
+  }
+
+  /* Step / task rows */
+  .rows {
     display: flex;
     flex-direction: column;
-    gap: calc(5 * var(--vp));
+    gap: calc(7 * var(--vp));
   }
 
-  .tasks {
-    display: flex;
-    flex-direction: column;
-    gap: calc(5 * var(--vp));
-    margin-top: calc(3 * var(--vp));
-  }
-
-  .task {
-    display: flex;
-    align-items: flex-start;
-    gap: calc(8 * var(--vp));
-    padding: calc(7 * var(--vp)) calc(8 * var(--vp));
-    border-radius: var(--radius-sm);
-    background: var(--bg-field);
-    border: 1px solid var(--border-strong);
-    color: var(--text);
-    font-size: calc(12 * var(--vp));
-    line-height: calc(14 * var(--vp));
-    transition:
-      color 150ms ease,
-      background 150ms ease,
-      border-color 150ms ease;
-  }
-
-  .task.active {
-    background: var(--bg-hover);
-    border-color: var(--border-hover);
-    color: var(--white);
-  }
-
-  .task.done {
-    background: var(--bg-raised);
-    border-color: var(--border);
-    color: var(--muted);
-  }
-
-  .tick {
+  .row {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: calc(14 * var(--vp));
-    height: calc(14 * var(--vp));
-    border-radius: calc(3 * var(--vp));
-    background: var(--bg-frame);
-    border: 1px solid var(--border-hover);
-    color: var(--green);
-    transition:
-      background 150ms ease,
-      border-color 150ms ease;
-  }
-
-  .task.active .tick {
-    background: var(--tint-blue);
-    border-color: var(--blue);
-  }
-
-  .task.done .tick {
-    background: var(--tint-green);
-    border-color: var(--line-green);
-  }
-
-  .task-label {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .task.done .task-label {
-    text-decoration: line-through;
-    text-decoration-color: var(--dim);
-  }
-
-  .task-count {
-    flex-shrink: 0;
-    color: var(--muted);
-    font-size: calc(11 * var(--vp));
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .optional {
-    display: flex;
-    flex-direction: column;
-    gap: calc(5 * var(--vp));
-  }
-
-  .optional-title,
-  .next-label {
-    flex-shrink: 0;
-    color: var(--muted);
-    font-size: calc(10 * var(--vp));
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .optional-list {
-    display: flex;
-    flex-direction: column;
-    gap: calc(5 * var(--vp));
-  }
-
-  .optional-item {
-    display: flex;
-    align-items: flex-start;
     gap: calc(8 * var(--vp));
     color: var(--text);
-    font-size: calc(11 * var(--vp));
-    line-height: calc(12 * var(--vp));
+    font-size: calc(12 * var(--vp));
+    line-height: 1.35;
     transition: color 150ms ease;
   }
 
-  .optional-item.done {
-    color: var(--dim);
+  .row .mark {
+    background: var(--dim);
   }
 
-  .optional-tick {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: calc(12 * var(--vp));
-    height: calc(12 * var(--vp));
-    margin: 0 1px;
-    border-radius: calc(2 * var(--vp));
-    background: var(--bg-frame);
-    border: 1px solid var(--border-hover);
-    color: var(--green);
-    transition:
-      background 150ms ease,
-      border-color 150ms ease;
+  .row.active {
+    color: var(--white);
   }
 
-  .optional-item.done .optional-tick {
-    background: var(--tint-green);
-    border-color: var(--line-green);
+  .row.active .mark {
+    background: var(--blue);
   }
 
-  .optional-label {
+  .row.done {
+    color: var(--muted);
+  }
+
+  .row.done .mark {
+    background: var(--green);
+  }
+
+  .row-label {
     flex: 1;
     min-width: 0;
   }
 
-  .optional-item.done .optional-label {
+  .row.done .row-label {
     text-decoration: line-through;
     text-decoration-color: var(--dim);
+  }
+
+  .row-more {
+    padding-left: calc(13 * var(--vp));
+    color: var(--dim);
+    font-size: calc(11 * var(--vp));
+  }
+
+  /* Optional side objectives */
+  .optional {
+    display: flex;
+    flex-direction: column;
+    gap: calc(8 * var(--vp));
+  }
+
+  .row--optional {
+    font-size: calc(11.5 * var(--vp));
+  }
+
+  .row .mark--hollow {
+    box-sizing: border-box;
+    background: transparent;
+    border: 1px solid var(--dim);
+  }
+
+  .row.done .mark--hollow {
+    background: var(--green);
+    border-color: var(--green);
   }
 
   .next {
     display: flex;
     align-items: baseline;
     gap: calc(8 * var(--vp));
-    font-size: calc(11 * var(--vp));
   }
 
   .next-text {
     min-width: 0;
     overflow: hidden;
     color: var(--text);
+    font-size: calc(11.5 * var(--vp));
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .step-more {
-    padding-left: calc(8 * var(--vp));
-    color: var(--dim);
-    font-size: calc(11 * var(--vp));
-  }
-
+  /* Gauges + chips */
   .gauges {
     display: flex;
     flex-direction: column;
-    gap: calc(8 * var(--vp));
-    padding: calc(10 * var(--vp)) calc(12 * var(--vp));
-    border-top: 1px solid var(--border);
+    gap: calc(10 * var(--vp));
   }
 
   .chips {
@@ -660,9 +547,9 @@
     align-items: center;
     gap: calc(6 * var(--vp));
     max-width: 100%;
-    height: calc(24 * var(--vp));
-    padding: 0 calc(9 * var(--vp));
-    border-radius: var(--radius-sm);
+    height: calc(22 * var(--vp));
+    padding: 0 calc(8 * var(--vp));
+    border-radius: 2px;
     background: var(--bg-field);
     border: 1px solid var(--border-strong);
     font-size: calc(11 * var(--vp));
@@ -710,75 +597,23 @@
     min-width: 0;
     overflow: hidden;
     color: var(--white);
-    font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .footer {
-    display: flex;
-    flex-direction: column;
-    gap: calc(7 * var(--vp));
-    padding: calc(9 * var(--vp)) calc(12 * var(--vp)) calc(11 * var(--vp));
-    background: var(--bg-frame);
-    border-top: 1px solid var(--border);
-  }
-
-  .footer-row {
+  /* Stat footer */
+  .stat-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
-  .progress-label {
+  .stat-label {
     display: inline-flex;
     align-items: center;
     gap: calc(7 * var(--vp));
     color: var(--muted);
     font-size: calc(12 * var(--vp));
-  }
-
-  .progress-value {
-    color: var(--white);
-    font-size: calc(14 * var(--vp));
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .segments {
-    display: flex;
-    gap: calc(3 * var(--vp));
-  }
-
-  .segment {
-    flex: 1;
-    height: calc(6 * var(--vp));
-    border-radius: calc(2 * var(--vp));
-    background: var(--bg-sidebar);
-    transition: background 150ms ease;
-  }
-
-  .segment.filled {
-    background: var(--blue);
-  }
-
-  .track {
-    height: calc(6 * var(--vp));
-    overflow: hidden;
-    border-radius: calc(2 * var(--vp));
-    background: var(--bg-sidebar);
-  }
-
-  .fill {
-    height: 100%;
-    border-radius: calc(2 * var(--vp));
-    background: var(--blue);
-    transition: width 400ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .stage-current .segments,
-  .stage-current .track {
-    margin-top: calc(3 * var(--vp));
   }
 
   .stat {
@@ -790,7 +625,6 @@
   .stat-value {
     color: var(--white);
     font-size: calc(16 * var(--vp));
-    font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
 
@@ -801,7 +635,6 @@
 
   .gain {
     font-size: calc(11 * var(--vp));
-    font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
 
@@ -809,16 +642,13 @@
     display: flex;
     align-items: center;
     gap: calc(8 * var(--vp));
-    padding: calc(8 * var(--vp)) calc(12 * var(--vp));
-    border-top: 1px solid var(--border);
-    background: var(--tint-blue);
-    color: var(--blue);
+    color: var(--text);
     font-size: calc(11.5 * var(--vp));
-    font-weight: 600;
     line-height: 1.35;
   }
 
   .hint :global(svg) {
     flex-shrink: 0;
+    color: var(--blue);
   }
 </style>

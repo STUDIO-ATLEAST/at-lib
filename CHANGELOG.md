@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- New look for the mission card and mission status: solid dark panel, square icon tile, uppercase title, small square step marks, and a progress bar with a count tag and percent. Same exports and NUI messages as before.
+
 ## 1.2.0
 
 - Search and Ped Loot only give items that a server script allowed with the new server export `AllowLoot(source, items)`. Before, the client sent the loot list itself, so a cheater could give themselves any item. Set `at_lib_client_loot` to `true` to get the old behaviour on a test server.

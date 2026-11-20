@@ -35,7 +35,7 @@
 
 <style>
   .gauge {
-    --tone: var(--blue);
+    --tone: #228be6;
     --tone-text: var(--text);
     display: flex;
     flex-direction: column;
@@ -95,16 +95,16 @@
   }
 
   .track {
-    height: calc(4 * var(--vp));
+    height: calc(6 * var(--vp));
     overflow: hidden;
-    background: var(--bg-sidebar);
-    border-radius: 999px;
+    background: #373a40;
+    border-radius: 2px;
   }
 
   .fill {
     height: 100%;
     background: var(--tone);
-    border-radius: 999px;
+    border-radius: 2px;
     transition:
       width 400ms cubic-bezier(0.22, 1, 0.36, 1),
       background 150ms ease;
@@ -117,8 +117,8 @@
 
   .segment {
     flex: 1;
-    height: calc(4 * var(--vp));
-    background: var(--bg-sidebar);
+    height: calc(6 * var(--vp));
+    background: #373a40;
     border-radius: calc(2 * var(--vp));
     transition: background 150ms ease;
   }
